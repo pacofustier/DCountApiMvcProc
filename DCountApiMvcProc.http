@@ -1,0 +1,6 @@
+@DCountApiMvcProc_HostAddress = http://localhost:5244
+
+GET {{DCountApiMvcProc_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

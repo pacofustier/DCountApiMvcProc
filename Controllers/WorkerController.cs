@@ -1,0 +1,25 @@
+﻿using DCountApiMvcProc.Models;
+using DCountApiMvcProc.Services;
+using Microsoft.AspNetCore.Mvc;
+namespace DCountApiMvcProc.Controllers;
+
+[ApiController]
+[Route("[controller]")]
+public class WorkerController(WorkerService workerService) : ControllerBase
+{
+    private readonly WorkerService _workerService = workerService;
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Worker>>> GetAllWorkers()
+    {
+        try
+        {             
+            var workers = await _workerService.GetAllWorkers();
+            return Ok(workers);
+        }
+        catch (Exception err)
+        {
+            return StatusCode(500, $"Error : {err.Message}");
+        }
+    }
+}
