@@ -79,4 +79,25 @@ public class WorkerController(WorkerService workerService) : ControllerBase
             return StatusCode(500, $"Erreur interne : {ex.Message}");
         }
     }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteWorker(int id)
+    {
+        try
+        {
+            var result = await _workerService.DeleteWorker(id);
+            if (result == null)
+                return NotFound($"Aucun Worker trouvé avec l'Id {id}");
+
+            return Ok(result);
+        }
+        catch (SqlException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Erreur interne : {ex.Message}");
+        }
+    }
 }

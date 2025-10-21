@@ -114,4 +114,29 @@ public class WorkerService(IConfiguration configuration)
         return null;
     }
 
+    public async Task<(int IdRemoved, string Message)?> DeleteWorker(int id)
+{
+    using (SqlConnection conn = new SqlConnection(_connectionString))
+    using (SqlCommand cmd = new SqlCommand("dbo.usp_DeleteWorker", conn))
+    {
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@Id", id);
+
+        await conn.OpenAsync();
+
+        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+        {
+            if (await reader.ReadAsync())
+            {
+                return (
+                    reader.GetInt32(reader.GetOrdinal("IdRemoved")),
+                    reader.GetString(reader.GetOrdinal("Message"))
+                );
+            }
+        }
+    }
+
+    return null;
+}
+
 }
