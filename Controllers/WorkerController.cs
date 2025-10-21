@@ -24,7 +24,8 @@ public class WorkerController(WorkerService workerService) : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Worker>> GetWorkerById(int id)
+    public async Task<ActionResult<Worker>> GetWorkerById(
+        [FromRoute] int id)
     {
         try
         {
@@ -34,6 +35,21 @@ public class WorkerController(WorkerService workerService) : ControllerBase
                 return NotFound($"Worker with ID {id} not found.");
             }
             return Ok(worker);
+        }
+        catch (Exception err)
+        {
+            return StatusCode(500, $"Error : {err.Message}");
+        }
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<int>> CreateWorker(
+        [FromBody] Worker worker)
+    {
+        try
+        {
+            var newWorkerId = await _workerService.CreateWorker(worker);
+            return CreatedAtAction(nameof(GetWorkerById), new { id = newWorkerId }, newWorkerId);
         }
         catch (Exception err)
         {

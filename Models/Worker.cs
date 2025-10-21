@@ -11,7 +11,5 @@ namespace DCountApiMvcProc.Models
 
         [EmailAddress, StringLength(128)]
         public string? Email { get; set; }
-
-        public ICollection<DCount> DCounts { get; set; } = [];
     }
 }
