@@ -87,5 +87,31 @@ public class WorkerService(IConfiguration configuration)
         return null;
     }
 
+    public async Task<Worker?> UpdateWorker(int id, string? name, string? email)
+    {
+        using SqlConnection conn = new(_connectionString);
+        using SqlCommand cmd = new("dbo.usp_UpdateWorker", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@Id", id);
+        cmd.Parameters.AddWithValue("@Name", (object?)name ?? DBNull.Value);
+        cmd.Parameters.AddWithValue("@Email", (object?)email ?? DBNull.Value);
+
+        await conn.OpenAsync();
+
+        using SqlDataReader reader = await cmd.ExecuteReaderAsync();
+        if (await reader.ReadAsync())
+        {
+            return new Worker
+            {
+                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                Name = reader.GetString(reader.GetOrdinal("Name")),
+                Email = reader.IsDBNull(reader.GetOrdinal("Email"))
+                    ? string.Empty
+                    : reader.GetString(reader.GetOrdinal("Email"))
+            };
+        }
+
+        return null;
+    }
 
 }

@@ -1,6 +1,7 @@
 ﻿using DCountApiMvcProc.Models;
 using DCountApiMvcProc.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 namespace DCountApiMvcProc.Controllers;
 
 [ApiController]
@@ -54,6 +55,28 @@ public class WorkerController(WorkerService workerService) : ControllerBase
         catch (Exception err)
         {
             return StatusCode(500, $"Error : {err.Message}");
+        }
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<Worker>> UpdateWorker(int id, [FromBody] Worker worker)
+    {
+        try
+        {
+            var updated = await _workerService.UpdateWorker(id, worker.Name, worker.Email);
+            if (updated == null)
+                return NotFound($"Aucun Worker trouvé avec l'Id {id}");
+
+            return Ok(updated);
+        }
+        catch (SqlException ex)
+        {
+            // Gestion des erreurs levées par THROW dans SQL
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Erreur interne : {ex.Message}");
         }
     }
 }
