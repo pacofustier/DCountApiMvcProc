@@ -33,4 +33,27 @@ public class WorkerService(IConfiguration configuration)
 
         return workers;
     }
+
+    public async Task<Worker?> GetWorkerById(int id)
+    {
+        Worker? worker = null;
+        using (SqlConnection conn = new(_connectionString))
+        using (SqlCommand cmd = new("dbo.usp_GetWorkerById", conn))
+        {
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@Id", id);
+            await conn.OpenAsync();
+            using SqlDataReader reader = await cmd.ExecuteReaderAsync();
+            if (await reader.ReadAsync())
+            {
+                worker = new Worker
+                {
+                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                    Name = reader.GetString(reader.GetOrdinal("Name")),
+                    Email = reader.GetString(reader.GetOrdinal("Email"))
+                };
+            }
+        }
+        return worker;
+    }
 }

@@ -22,4 +22,22 @@ public class WorkerController(WorkerService workerService) : ControllerBase
             return StatusCode(500, $"Error : {err.Message}");
         }
     }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Worker>> GetWorkerById(int id)
+    {
+        try
+        {
+            var worker = await _workerService.GetWorkerById(id);
+            if (worker == null)
+            {
+                return NotFound($"Worker with ID {id} not found.");
+            }
+            return Ok(worker);
+        }
+        catch (Exception err)
+        {
+            return StatusCode(500, $"Error : {err.Message}");
+        }
+    }
 }
