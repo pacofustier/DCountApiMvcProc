@@ -71,23 +71,20 @@ public class WorkerService(IConfiguration configuration)
 
             await conn.OpenAsync();
 
-            using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+            using SqlDataReader reader = await cmd.ExecuteReaderAsync();
+            if (await reader.ReadAsync())
             {
-                if (await reader.ReadAsync())
+                return new Worker
                 {
-                    return new Worker
-                    {
-                        Id = reader.GetInt32(reader.GetOrdinal("NewId")),
-                        Name = reader.GetString(reader.GetOrdinal("Name")),
-                        Email = reader.IsDBNull(reader.GetOrdinal("Email"))
-                            ? string.Empty
-                            : reader.GetString(reader.GetOrdinal("Email"))
-                    };
-                }
+                    Id = reader.GetInt32(reader.GetOrdinal("NewId")),
+                    Name = reader.GetString(reader.GetOrdinal("Name")),
+                    Email = reader.IsDBNull(reader.GetOrdinal("Email"))
+                        ? string.Empty
+                        : reader.GetString(reader.GetOrdinal("Email"))
+                };
             }
+            return null;
         }
-
-        return null;
     }
 
     public async Task<Worker?> UpdateWorker(int id, string? name, string? email)

@@ -25,7 +25,7 @@ public class WorkerController(WorkerService workerService) : ControllerBase
         }
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<ActionResult<Worker>> GetWorkerById(
         [FromRoute] int id)
     {
@@ -45,17 +45,21 @@ public class WorkerController(WorkerService workerService) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<int>> CreateWorker(
+    public async Task<ActionResult<Worker>> CreateWorker(
         [FromBody] Worker worker)
     {
         try
         {
-            var newWorkerId = await _workerService.CreateWorker(worker);
-            return CreatedAtAction(nameof(GetWorkerById), new { id = newWorkerId }, newWorkerId);
+            var newWorker = await _workerService.CreateWorker(worker);
+            if (newWorker == null)
+            {
+                return BadRequest("Failed to create worker.");
+            }
+            return CreatedAtAction(nameof(GetWorkerById), new { id = newWorker }, newWorker);
         }
         catch (Exception err)
         {
-            return StatusCode(500, $"Error : {err.Message}");
+            return Problem($"Error : {err.Message}");
         }
     }
 
