@@ -2,10 +2,11 @@
 using DCountApiMvcProc.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+
 namespace DCountApiMvcProc.Controllers;
 
-[ApiController]
 [Route("[controller]")]
+[ApiController]
 public class WorkerController(WorkerService workerService) : ControllerBase
 {
     private readonly WorkerService _workerService = workerService;

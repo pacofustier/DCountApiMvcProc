@@ -26,11 +26,12 @@ public class WorkerService(IConfiguration configuration)
                 {
                     Id = reader.GetInt32(reader.GetOrdinal("Id")),
                     Name = reader.GetString(reader.GetOrdinal("Name")),
-                    Email = reader.GetString(reader.GetOrdinal("Email"))
+                    Email = reader.IsDBNull(reader.GetOrdinal("Email"))
+                        ? null
+                        : reader.GetString(reader.GetOrdinal("Email"))
                 });
             }
         }
-
         return workers;
     }
 
@@ -50,7 +51,9 @@ public class WorkerService(IConfiguration configuration)
                 {
                     Id = reader.GetInt32(reader.GetOrdinal("Id")),
                     Name = reader.GetString(reader.GetOrdinal("Name")),
-                    Email = reader.GetString(reader.GetOrdinal("Email"))
+                    Email = reader.IsDBNull(reader.GetOrdinal("Email"))
+                        ? null
+                        : reader.GetString(reader.GetOrdinal("Email"))
                 };
             }
         }
