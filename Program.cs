@@ -11,11 +11,13 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
 
-builder.Host.UseSerilog();
 
+builder.Host.UseSerilog();
 builder.Services.AddControllers();
+builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 
 builder.Services.AddSingleton<WorkerService>();
 
@@ -27,6 +29,7 @@ try
 
     if (app.Environment.IsDevelopment())
     {
+        app.MapOpenApi();
         app.UseSwagger();
         app.UseSwaggerUI();
     }

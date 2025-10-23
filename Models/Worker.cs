@@ -1,15 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DCountApiMvcProc.Models
+namespace DCountApiMvcProc.Models;
+
+public class Worker
 {
-    public class Worker
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        [Required, StringLength(128)]
-        public string Name { get; set; } = string.Empty;
+    [Required, StringLength(128)]
+    public string Name { get; set; } = string.Empty;
 
-        [EmailAddress, StringLength(128)]
-        public string? Email { get; set; }
-    }
+    [EmailAddress, StringLength(128)]
+    public string? Email { get; set; }
 }
